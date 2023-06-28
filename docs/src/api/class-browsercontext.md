@@ -1604,3 +1604,31 @@ Will throw an error if the browser context is closed before the `event` is fired
 
 ### option: BrowserContext.waitForEvent2.timeout = %%-wait-for-event-timeout-%%
 * since: v1.8
+
+## async method: BrowserContext.enableRecorder
+* since: v1.35
+* langs: python
+  - alias-python: enable_recorder
+
+Enables code generation recorder.
+
+### param: BrowserContext.enableRecorder.language
+* since: v1.35
+* langs: python
+- `language` <[string]>
+
+Which programming language to generate in.
+
+### param: BrowserContext.enableRecorder.mode
+* since: v1.35
+* langs: python
+- `mode` <[null]|[string]>
+
+Which mode to start recorder in: `recording` | `inspecting`.
+
+### param: BrowserContext.enableRecorder.outputFile
+* since: v1.35
+* langs: python
+- `output_file` <[null]|[string]>
+
+Where to save generated code output.
