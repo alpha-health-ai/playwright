@@ -1629,6 +1629,7 @@ export type BrowserContextRecorderSupplementEnableParams = {
   outputFile?: string,
   handleSIGINT?: boolean,
   omitCallTracking?: boolean,
+  hideHighlight?: boolean,
 };
 export type BrowserContextRecorderSupplementEnableOptions = {
   language?: string,
