@@ -406,6 +406,7 @@ export class BrowserContext extends ChannelOwner<channels.BrowserContextChannel>
       testIdAttributeName?: string,
       outputFile?: string,
       handleSIGINT?: boolean,
+      highlight?: boolean,
   }) {
     await this._channel.recorderSupplementEnable(params);
   }

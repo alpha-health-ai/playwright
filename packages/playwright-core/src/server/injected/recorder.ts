@@ -42,12 +42,14 @@ export class Recorder {
   private _testIdAttributeName: string = 'data-testid';
   readonly document: Document;
   private _delegate: RecorderDelegate;
+  private _showHighlight: boolean;
 
   constructor(injectedScript: InjectedScript, delegate: RecorderDelegate, showHighlight: boolean) {
     this.document = injectedScript.document;
     this._injectedScript = injectedScript;
     this._delegate = delegate;
-    this._highlight = showHighlight ? new Highlight(injectedScript) : null;
+    this._highlight = new Highlight(injectedScript);
+    this._showHighlight = showHighlight;
 
     this.refreshListenersIfNeeded();
 
@@ -57,7 +59,7 @@ export class Recorder {
 
   refreshListenersIfNeeded() {
     // Ensure we are attached to the current document, and we are on top (last element);
-    if (!this._highlight || this._highlight.isInstalled())
+    if (this._highlight?.isInstalled())
       return;
     removeEventListeners(this._listeners);
     this._listeners = [
@@ -75,15 +77,21 @@ export class Recorder {
         if (!event.isTrusted)
           return;
         this._hoveredModel = null;
-        this._highlight?.hideActionPoint();
-        this._updateHighlight();
+        if (this._showHighlight) {
+          this._highlight?.hideActionPoint();
+          this._updateHighlight();
+        }
       }, true),
     ];
     this._highlight?.install();
   }
 
   setUIState(state: UIState) {
-    const { mode, actionPoint, actionSelector, language, testIdAttributeName } = state;
+    const { mode, actionPoint, showHighlight, actionSelector, language, testIdAttributeName } = state;
+    if (!showHighlight) {
+      this._highlight?.updateHighlight([], '', false)
+    }
+    this._showHighlight = showHighlight;
     this._testIdAttributeName = testIdAttributeName;
     this._highlight?.setLanguage(language);
     if (mode !== this._mode) {
@@ -94,7 +102,7 @@ export class Recorder {
       // All good.
     } else if (!actionPoint && !this._actionPoint) {
       // All good.
-    } else {
+    } else if (this._showHighlight) {
       if (actionPoint)
         this._highlight?.showActionPoint(actionPoint.x, actionPoint.y);
       else
@@ -266,7 +274,9 @@ export class Recorder {
   private _updateHighlight() {
     const elements = this._hoveredModel ? this._hoveredModel.elements : [];
     const selector = this._hoveredModel ? this._hoveredModel.selector : '';
-    this._highlight?.updateHighlight(elements, selector, this._mode === 'recording');
+    if (this._showHighlight) {
+      this._highlight?.updateHighlight(elements, selector, this._mode === 'recording');
+    }
   }
 
   private _onInput(event: Event) {
@@ -494,7 +504,7 @@ export class PollingRecorder implements RecorderDelegate {
   private _pollRecorderModeTimer: NodeJS.Timeout | undefined;
 
   constructor(injectedScript: InjectedScript) {
-    this._recorder = new Recorder(injectedScript, this, showHighlight);
+    this._recorder = new Recorder(injectedScript, this, true);
     this._embedder = injectedScript.window as any;
 
     injectedScript.onGlobalListenersRemoved.add(() => this._recorder.refreshListenersIfNeeded());
