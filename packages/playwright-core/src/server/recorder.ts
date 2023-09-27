@@ -53,6 +53,7 @@ const recorderSymbol = Symbol('recorderSymbol');
 export class Recorder implements InstrumentationListener {
   private _context: BrowserContext;
   private _mode: Mode;
+  private _showHighlight: boolean;
   private _highlightedSelector = '';
   private _recorderApp: IRecorderApp | null = null;
   private _currentCallsMetadata = new Map<CallMetadata, SdkObject>();
@@ -88,6 +89,7 @@ export class Recorder implements InstrumentationListener {
     this._mode = params.mode || 'none';
     this._contextRecorder = new ContextRecorder(context, params);
     this._context = context;
+    this._showHighlight = !params.hideHighlight;
     this._omitCallTracking = !!params.omitCallTracking;
     this._debugger = context.debugger();
     this._handleSIGINT = params.handleSIGINT;
@@ -175,6 +177,7 @@ export class Recorder implements InstrumentationListener {
         actionPoint,
         actionSelector,
         language: this._currentLanguage,
+        showHighlight: this._showHighlight,
         testIdAttributeName: this._contextRecorder.testIdAttributeName(),
       };
       return uiState;

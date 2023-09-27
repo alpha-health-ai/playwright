@@ -1113,6 +1113,7 @@ BrowserContext:
           literals:
           - inspecting
           - recording
+        hideHighlight: boolean?
         pauseOnNextStatement: boolean?
         testIdAttributeName: string?
         launchOptions: json?

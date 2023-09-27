@@ -1612,6 +1612,14 @@ Will throw an error if the browser context is closed before the `event` is fired
 
 Enables code generation recorder.
 
+
+### param: BrowserContext.enableRecorder.hideHighlight
+* since: v1.35
+* langs: python
+- `hideHighlight` <[boolean]>
+
+Toggle the highlight view for user actions when recording
+
 ### param: BrowserContext.enableRecorder.language
 * since: v1.35
 * langs: python
